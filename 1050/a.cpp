@@ -2,13 +2,15 @@
 
 using namespace std;
 
+#define INT_MIN 0x80000000
+
 int n;
-short *array;
+int *array;
 
 int sum(int start, int end) {
     int tmp = 0;
     for (int i=start; i<=end; i++) {
-        if (i%n >= start%n) {
+        if (i%n >= start%n && i%n <= end%n) {
             tmp += array[i];
         }
     }
@@ -16,7 +18,7 @@ int sum(int start, int end) {
 }
 
 int calc() {
-    int max = -999;
+    int max = INT_MIN;
     int tmp = 0;
 
     for (int i=0; i<n*n; i++) {
@@ -33,9 +35,13 @@ int calc() {
 
 int main(){
     cin >> n;
-    array = new short(n * n);
+    if (n == 0) {
+        cout << 0 << endl;
+        return 0;
+    }
+    array = new int(n * n);
     for (int x=0; x<n; x++) {
-        for ( int y=0; y<n; y++) {
+        for (int y=0; y<n; y++) {
             cin >> array[x * n + y];
         }
     }
@@ -43,5 +49,4 @@ int main(){
 
     return 0;
 }
-
 
