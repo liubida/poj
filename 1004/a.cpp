@@ -2,9 +2,11 @@
 #include <string>
 #include <cstring>
 #include "stdlib.h"
+#include "math.h"
 
 using namespace std;
 
+int MONTH_COUNT = 12;
 int calc_len(int a) {
     int len = 0;
     int tmp = a;
@@ -22,33 +24,42 @@ void to_array(int a, int * arr) {
         tmp /= 10;
     }
 
-    cout << "int to array: ";
-    for (int i=len-1; i>=0; i--) {
-        cout << arr[i] << ' ';
-    }
-    cout << endl;
+    //cout << "int to array: ";
+    //for (int i=len-1; i>=0; i--) {
+    //    cout << arr[i] << ' ';
+    //}
+    //cout << endl;
 }
 
+void div_with_array(int* a, int len_a) {
+    int num = 0;
+
+    for (int i=0; i<len_a; i++) {
+        num += a[i] * pow(10,i);
+    }
+
+    int result = 0;
+    for (; num > MONTH_COUNT; ) {
+        num -= MONTH_COUNT;
+        result++;
+    }
+    if (num >= 5) {
+        result++;
+    }
+    cout << '$' << (result+0.00)/100 << endl;
+}
 
 void add_with_array(int* a, int len_a, int* b, int len_b, int* ret) {
     int max_len = len_a > len_b ? len_a : len_b;
     int min_len = len_a < len_b ? len_a : len_b;
     //int* ret = (int*) malloc((max_len+1) * sizeof(int));
     //int ret[max_len+1];
-    cout << "max_len:" << len_a << endl;
-    cout << "min_len:" << len_b << endl;
 
     int i = 0;
 
     for (i=0; i<min_len; i++) {
         ret[i] = a[i] + b[i];
     }
-
-    cout << "int to array: ";
-    for (int i=max_len; i>=0; i--) {
-        cout << ret[i] << ' ';
-    }
-    cout << endl;
 
     if (i >= len_a) {
         // b is the longer array
@@ -76,7 +87,6 @@ void add_with_array(int* a, int len_a, int* b, int len_b, int* ret) {
 }
 
 int main() {
-    int MONTH_COUNT = 2;
     int t = 0;
     int* sum_arr = new int[3]();
     int sum_len = 0;
@@ -95,20 +105,19 @@ int main() {
         to_array(tmp, tmp_arr);
 
         sum_len = next_sum_len;
+
         int* array = new int[sum_len]();
-        memcpy(array, sum_arr, sum_len);
+        memcpy(array, sum_arr, sum_len*sizeof(int));
         delete sum_arr;
-        cout << tmp_len << ',' << sum_len << endl;
+
         next_sum_len = 1 + (tmp_len > sum_len ? tmp_len : sum_len);
-        sum_arr = new int[next_sum_len];
+        sum_arr = new int[next_sum_len]();
         add_with_array(tmp_arr, tmp_len, array, sum_len, sum_arr);
+
         t++;
     }
 
-    cout << sum_len << endl;
-    for (int i=sum_len-1; i>=0; i--) {
-        cout << sum_arr[i] << ' ';
-    }
+    div_with_array(sum_arr, sum_len);
 
     return 0;
 }
